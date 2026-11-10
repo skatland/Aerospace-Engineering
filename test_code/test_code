@@ -1,0 +1,59 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+
+# Draw a gold band as a torus.
+u, v = np.mgrid[0 : 2 * np.pi : 120j, 0 : 2 * np.pi : 40j]
+major_radius, tube_radius = 2.0, 0.28
+x = (major_radius + tube_radius * np.cos(v)) * np.cos(u)
+y = tube_radius * np.sin(v)
+z = (major_radius + tube_radius * np.cos(v)) * np.sin(u)
+
+fig = plt.figure(figsize=(8, 7))
+ax = fig.add_subplot(111, projection="3d")
+ax.plot_surface(
+    x,
+    y,
+    z,
+    color="#d4a017",
+    edgecolor="none",
+    shade=True,
+    antialiased=True,
+)
+
+# Add a faceted diamond above the band.
+girdle_z, table_z, culet_z = 2.48, 2.82, 2.30
+corners = [
+    (-0.22, -0.22, girdle_z),
+    (0.22, -0.22, girdle_z),
+    (0.22, 0.22, girdle_z),
+    (-0.22, 0.22, girdle_z),
+]
+table = [
+    (-0.09, -0.09, table_z),
+    (0.09, -0.09, table_z),
+    (0.09, 0.09, table_z),
+    (-0.09, 0.09, table_z),
+]
+culet = (0, 0, culet_z)
+
+facets = [table]
+facet_colors = ["#d9f4ff"]
+for i in range(4):
+    next_i = (i + 1) % 4
+    facets.append([corners[i], corners[next_i], table[next_i], table[i]])
+    facet_colors.append(["#bdeaff", "#f5fcff", "#9bdcf5", "#e7f8ff"][i])
+    facets.append([corners[i], corners[next_i], culet])
+    facet_colors.append(["#78cbe8", "#c4efff", "#8bd7f2", "#e0f8ff"][i])
+
+diamond = Poly3DCollection(
+    facets, facecolors=facet_colors, edgecolors="#6e9eaf", linewidths=0.6
+)
+ax.add_collection3d(diamond)
+
+ax.set_title("A Wedding Ring", pad=18)
+ax.set_box_aspect((1, 1, 0.8))
+ax.view_init(elev=28, azim=-55)
+ax.set_axis_off()
+plt.tight_layout()
+plt.show()
