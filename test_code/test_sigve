@@ -1,0 +1,13 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+x = np.linspace(-1, 1, 1000)
+sigma = 0.05
+delta = np.exp(-x**2 / (2 * sigma**2)) / (sigma * np.sqrt(2 * np.pi))
+
+plt.plot(x, delta)
+plt.title("Dirac delta approximation")
+plt.xlabel("x")
+plt.ylabel("δ(x)")
+plt.grid(True)
+plt.show()
